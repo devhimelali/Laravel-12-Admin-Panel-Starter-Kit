@@ -6,7 +6,7 @@
 
         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
         <li class="nav-item">
-            <a href="apps-calendar.html" class="nav-link menu-link"> <i class="ph-gauge"></i> <span
+            <a href="{{ route('dashboard') }}" class="nav-link menu-link"> <i class="ph-gauge"></i> <span
                     data-key="t-dashboards">Dashboards</span> </a>
         </li>
 

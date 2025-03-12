@@ -1,10 +1,26 @@
 @props(['on'])
 
-<div x-data="{ shown: false, timeout: null }"
-    x-init="@this.on('{{ $on }}', () => { clearTimeout(timeout); shown = true; timeout = setTimeout(() => { shown = false }, 2000); })"
-    x-show.transition.out.opacity.duration.1500ms="shown"
-    x-transition:leave.opacity.duration.1500ms
-    style="display: none;"
-    {{ $attributes->merge(['class' => 'text-sm text-gray-600 dark:text-gray-400']) }}>
+<div id="saved-message" class="small text-muted" style="display: none; opacity: 0; transition: opacity 1s;">
     {{ $slot->isEmpty() ? 'Saved.' : $slot }}
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const savedMessage = document.getElementById('saved-message');
+
+        // Livewire event listener
+    @this.on('{{ $on }}', function () {
+        savedMessage.style.display = 'block'; // Show the message
+        setTimeout(function() {
+            savedMessage.style.opacity = 1; // Fade in
+        }, 10);
+
+        setTimeout(function () {
+            savedMessage.style.opacity = 0; // Fade out
+            setTimeout(function () {
+                savedMessage.style.display = 'none'; // Hide the message after fading
+            }, 1000); // Wait for the fade-out effect to complete
+        }, 2000); // Show for 2 seconds
+    });
+    });
+</script>
