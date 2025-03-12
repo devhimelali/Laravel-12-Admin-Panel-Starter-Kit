@@ -1,4 +1,4 @@
-<x-guest-layout>
+{{-- <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
             <x-authentication-card-logo />
@@ -45,4 +45,83 @@
             </div>
         </form>
     </x-authentication-card>
-</x-guest-layout>
+</x-guest-layout> --}}
+
+@extends('layouts.auth')
+@section('title', 'Login')
+@section('content')
+    <div class="col-lg-5">
+        <div class="card mb-0">
+            <div class="row g-0 align-items-center">
+                <div class="col-xxl-12 mx-auto">
+                    <div class="card mb-0 border-0 shadow-none mb-0">
+                        <div class="card-body p-sm-4 m-lg-4">
+                            <div class="text-center">
+                                <h5 class="fs-3xl">Welcome Back</h5>
+                                <p class="text-muted">Sign in to continue to {{ env('APP_NAME') }}.</p>
+                            </div>
+                            <div class="p-2 mt-4">
+                                <form action="{{ route('login') }}" method="post">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label">Email <span
+                                                class="text-danger">*</span></label>
+                                        <div class="position-relative ">
+                                            <input type="email" class="form-control  password-input" id="username"
+                                                placeholder="Ex: user@example.com" name="email" required autofocus
+                                                autocomplete="username" value="{{ old('email') }}">
+                                        </div>
+                                        @error('email')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="float-end">
+                                            <a href="{{ route('password.request') }}" class="text-muted">Forgot
+                                                password?</a>
+                                        </div>
+                                        <label class="form-label" for="password-input">Password <span
+                                                class="text-danger">*</span></label>
+                                        <div class="position-relative auth-pass-inputgroup mb-3">
+                                            <input type="password" class="form-control pe-5 password-input "
+                                                placeholder="*******" id="password-input" name="password" required
+                                                autocomplete="current-password">
+                                            <button
+                                                class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+                                                type="button" id="password-addon"><i
+                                                    class="ri-eye-fill align-middle"></i></button>
+                                        </div>
+                                        @error('password')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value=""
+                                            id="auth-remember-check" name="remember">
+                                        <label class="form-check-label" for="auth-remember-check">Remember
+                                            me</label>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <button class="btn btn-primary w-100" type="submit">Sign
+                                            In</button>
+                                    </div>
+                                </form>
+
+                                <div class="text-center mt-5">
+                                    <p class="mb-0">Don't have an account ? <a href="{{ route('register') }}"
+                                            class="fw-semibold text-secondary text-decoration-underline">
+                                            SignUp</a> </p>
+                                </div>
+                            </div>
+                        </div><!-- end card body -->
+                    </div><!-- end card -->
+                </div>
+                <!--end col-->
+            </div>
+            <!--end row-->
+        </div>
+    </div>
+@endsection
