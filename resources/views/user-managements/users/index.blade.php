@@ -36,6 +36,10 @@
                                 'class' => 'th-roles',
                             ],
                             [
+                                'label' => 'Created at',
+                                'class' => 'th-created-at',
+                            ],
+                            [
                                 'label' => 'Actions',
                                 'class' => 'th-actions',
                             ],
@@ -49,43 +53,5 @@
     @include('components.common.datatable-css')
     @include('components.common.datatable-script')
 @endsection
-@section('page-script')
-    <script>
-        $(document).ready(function () {
-            let table = $('#dataTable').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('users.index') }}",
-                columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                    orderable: false,
-                    searchable: false
-                },
-                    {
-                        data: 'name',
-                        name: 'name'
-                    },
-                    {
-                        data: 'email',
-                        name: 'email'
-                    },
-                    {
-                        data: 'roles',
-                        name: 'roles'
-                    },
-                    {
-                        data: 'actions',
-                        name: 'actions',
-                        orderable: false,
-                        searchable: false
-                    },
-                ],
-                order: [
-                    [1, 'asc']
-                ]
-            });
-        });
-    </script>
-@endsection
-
+@include('components.user-managements.users.page-script')
+@include('components.user-managements.users.page-style')
