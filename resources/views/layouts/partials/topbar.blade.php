@@ -162,16 +162,21 @@
                     <span class="text-start ms-xl-2">
                         <span
                             class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ auth()->user()->name }}</span>
-                        <span class="d-none d-xl-block ms-1 fs-sm user-name-sub-text">Founder</span>
+                        <span class="d-none d-xl-block ms-1 fs-sm user-name-sub-text">
+                            {{ ucfirst(auth()->user()->roles()->first()->name) }}
+                        </span>
                     </span>
                 </span>
             </button>
             <div class="dropdown-menu dropdown-menu-end">
                 <!-- item-->
                 <h6 class="dropdown-header">Welcome {{ auth()->user()->name }}!</h6>
-                <a class="dropdown-item" href="{{ route('profile.show') }}"><i
-                        class="align-middle mdi mdi-account-circle text-muted fs-lg me-1"></i> <span
-                        class="align-middle">Profile</span></a>
+                <a class="dropdown-item" href="{{ route('profile.show') }}">
+                    <i class="align-middle mdi mdi-account-circle text-muted fs-lg me-1"></i>
+                    <span class="align-middle">
+                        Profile
+                    </span>
+                </a>
                 <a class="dropdown-item" href="pages-profile-settings.html"><i
                         class="align-middle mdi mdi-cog-outline text-muted fs-lg me-1"></i> <span
                         class="align-middle">Settings</span></a>

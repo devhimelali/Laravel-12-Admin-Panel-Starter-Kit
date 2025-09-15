@@ -38,6 +38,47 @@
                     [4, 'desc']
                 ]
             });
+
+            $(document).on('click', '.delete', function () {
+                let id = $(this).data('id');
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#000",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "DELETE",
+                            url: "{{ route('users.destroy', ':id') }}".replace(':id', id),
+                            data: {
+                                _token: "{{ csrf_token() }}"
+                            },
+                            beforeSend: function () {
+                                $('#preloader').show();
+                            },
+                            success: function (response) {
+                                if (response.status === 'success') {
+                                    notify('success', response.message);
+                                    table.ajax.reload(null, false);
+                                } else {
+                                    notify('error', response.message ?? 'Something went wrong!');
+                                }
+                            },
+                            error: function (xhr) {
+                                notify('error', xhr.responseJSON?.message ?? 'Failed to delete user.');
+                            },
+                            complete: function () {
+                                $('#preloader').hide();
+                            }
+                        });
+                    }
+                });
+            });
         });
     </script>
 @endsection

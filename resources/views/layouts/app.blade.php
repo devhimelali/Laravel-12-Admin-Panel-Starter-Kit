@@ -192,6 +192,7 @@
     </script>
     <!-- App js -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @yield('vendor-script')
     @yield('page-script')
     @stack('modals')

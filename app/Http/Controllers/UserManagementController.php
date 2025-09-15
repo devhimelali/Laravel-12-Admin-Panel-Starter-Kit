@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -23,6 +24,11 @@ class UserManagementController extends Controller
                         ->map(fn($role) => ucfirst($role))
                         ->implode(', ');
                 })
+                ->filterColumn('roles', function ($query, $keyword) {
+                    $query->whereHas('roles', function ($q) use ($keyword) {
+                        $q->where('name', 'like', "%{$keyword}%");
+                    });
+                })
                 ->editColumn('created_at', fn($row) => $row->created_at->format('d-m-Y (h:i A)'))
                 ->addColumn('actions', function ($row) {
                     return '<div class="btn-group">
@@ -40,5 +46,46 @@ class UserManagementController extends Controller
                 ->make(true);
         }
         return view('user-managements.users.index');
+    }
+
+    public function store(UserRequest $request)
+    {
+        $data = $request->validated();
+        $data['password'] = bcrypt($data['password']);
+
+        User::create($data);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User created successfully'
+        ]);
+    }
+
+    public function update(UserRequest $request, User $user)
+    {
+        $data = $request->validated();
+
+        if (empty($data['password'])) {
+            unset($data['password']);
+        } else {
+            $data['password'] = bcrypt($data['password']);
+        }
+
+        $user->update($data);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User updated successfully'
+        ]);
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User deleted successfully.'
+        ]);
     }
 }
