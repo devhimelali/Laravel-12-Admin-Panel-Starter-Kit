@@ -34,7 +34,7 @@ class UserManagementController extends Controller
                 ->editColumn('email_verified_at', fn($row) => $row->email_verified_at?->format('d-m-Y (h:i A)') ?? 'N/A')
                 ->addColumn('actions', function ($row) {
                     return '<div class="btn-group">
-                                <a href="javascript:void(0)" data-id="' . $row->id . '" class="edit btn btn-secondary btn-sm d-flex align-items-center">
+                                <a href="javascript:void(0)" data-id="' . $row->id . '" class="editUserBtn btn btn-secondary btn-sm d-flex align-items-center">
                                     <i class="ph ph-pencil me-1"></i>
                                     Edit
                                 </a>
@@ -70,6 +70,13 @@ class UserManagementController extends Controller
         ]);
     }
 
+    public function edit(User $user)
+    {
+        $user->load('roles');
+        $roles = Role::orderBy('name', 'asc')->get();
+        return view('components.user-managements.users.edit-modal', compact('user', 'roles'));
+    }
+
     public function update(UserRequest $request, User $user)
     {
         $data = $request->validated();
@@ -81,6 +88,8 @@ class UserManagementController extends Controller
         }
 
         $user->update($data);
+
+        $user->syncRoles($data['role']);
 
         return response()->json([
             'status' => 'success',

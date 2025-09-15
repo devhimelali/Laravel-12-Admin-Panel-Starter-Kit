@@ -44,25 +44,16 @@
             });
 
             $(document).off('click', '#addUserBtn').on('click', '#addUserBtn', function () {
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('users.create') }}",
-                    beforeSend: function () {
-                        $('#loader').show();
-                    },
-                    success: function (response) {
-                        $('#commonModal .modal-content').html(response);
-
-                        // Show the modal
-                        $('#commonModal').modal('show');
-                    },
-                    error: function (xhr) {
-                        notify('error', xhr.responseJSON?.message ?? 'Failed to load form.');
-                    },
-                    complete: function () {
-                        $('#loader').hide();
-                    }
-                });
+                $('#loader').show();
+                $.get("{{ route('users.create') }}", function (response) {
+                    console.log(response);
+                    $('#commonModal .modal-content').html(response);
+                    $('#commonModal').modal('show');
+                }).fail(function (xhr) {
+                    notify('error', xhr.responseJSON?.message ?? 'Failed to load form.');
+                }).always(function () {
+                    $('#loader').hide();
+                })
             });
 
             $(document).on('submit', '#addEditUserForm', function (e) {
@@ -101,7 +92,17 @@
                 })
             })
 
-            $(document).off('click', '#editUserBtn').on('click', '#editUserBtn', function () {
+            $(document).off('click', '.editUserBtn').on('click', '.editUserBtn', function () {
+                let id = $(this).data('id');
+                $('#loader').show();
+                $.get("{{ route('users.edit', ':id') }}".replace(':id', id), function (response) {
+                    $('#commonModal .modal-content').html(response);
+                    $('#commonModal').modal('show');
+                }).fail(function (xhr) {
+                    notify('error', xhr.responseJSON?.message ?? 'Failed to load form.');
+                }).always(function () {
+                    $('#loader').hide();
+                })
             })
 
 
