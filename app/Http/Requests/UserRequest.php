@@ -34,6 +34,8 @@ class UserRequest extends FormRequest
                 'min:8',
                 'confirmed',
             ],
+
+            'role' => ['required', 'string', 'max:255', Rule::exists('roles', 'name')],
         ];
     }
 }

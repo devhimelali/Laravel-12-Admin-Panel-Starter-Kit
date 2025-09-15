@@ -9,8 +9,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="card-title">All users</h3>
                     <div>
-                        <button class="btn btn-sm btn-secondary d-flex align-items-center" data-bs-toggle="modal"
-                                data-bs-target="#addOrEditModal">
+                        <button class="btn btn-sm btn-secondary d-flex align-items-center" id="addUserBtn">
                             <i class="ph ph-plus me-1"></i>
                             Add
                         </button>
@@ -36,8 +35,12 @@
                                 'class' => 'th-roles',
                             ],
                             [
-                                'label' => 'Created at',
+                                'label' => 'Created At',
                                 'class' => 'th-created-at',
+                            ],
+                            [
+                                'label' => 'Email Verified At',
+                                'class' => 'th-email-verified-at',
                             ],
                             [
                                 'label' => 'Actions',
@@ -52,6 +55,7 @@
 
     @include('components.common.datatable-css')
     @include('components.common.datatable-script')
+    @include('components.modal.modal')
 @endsection
 @include('components.user-managements.users.page-script')
 @include('components.user-managements.users.page-style')

@@ -28,6 +28,10 @@
                         name: 'created_at'
                     },
                     {
+                        data: 'email_verified_at',
+                        name: 'email_verified_at'
+                    },
+                    {
                         data: 'actions',
                         name: 'actions',
                         orderable: false,
@@ -38,6 +42,68 @@
                     [4, 'desc']
                 ]
             });
+
+            $(document).off('click', '#addUserBtn').on('click', '#addUserBtn', function () {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('users.create') }}",
+                    beforeSend: function () {
+                        $('#loader').show();
+                    },
+                    success: function (response) {
+                        $('#commonModal .modal-content').html(response);
+
+                        // Show the modal
+                        $('#commonModal').modal('show');
+                    },
+                    error: function (xhr) {
+                        notify('error', xhr.responseJSON?.message ?? 'Failed to load form.');
+                    },
+                    complete: function () {
+                        $('#loader').hide();
+                    }
+                });
+            });
+
+            $(document).on('submit', '#addEditUserForm', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    data: new FormData(this),
+                    url: $(this).attr('action'),
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        $('#submitBtn').prop('disabled', true).html(`<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        Please wait...`);
+                    },
+                    success: function (response) {
+                        if (response.status == 'success') {
+                            $('#addEditUserForm').trigger('reset');
+                            $('#commonModal').modal('hide');
+                            table.ajax.reload(null, false);
+                            notify('success', response.message || 'User added successfully!');
+                        }
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+                            for (let field in errors) {
+                                notify('error', errors[field][0]);
+                            }
+                        } else {
+                            notify("error", "An error occurred. Please try again.");
+                        }
+                    },
+                    complete: function () {
+                        $('#submitBtn').prop('disabled', false).html('Save');
+                    }
+                })
+            })
+
+            $(document).off('click', '#editUserBtn').on('click', '#editUserBtn', function () {
+            })
+
 
             $(document).on('click', '.delete', function () {
                 let id = $(this).data('id');
@@ -59,7 +125,7 @@
                                 _token: "{{ csrf_token() }}"
                             },
                             beforeSend: function () {
-                                $('#preloader').show();
+                                $('#loader').show();
                             },
                             success: function (response) {
                                 if (response.status === 'success') {
@@ -73,7 +139,7 @@
                                 notify('error', xhr.responseJSON?.message ?? 'Failed to delete user.');
                             },
                             complete: function () {
-                                $('#preloader').hide();
+                                $('#loader').hide();
                             }
                         });
                     }

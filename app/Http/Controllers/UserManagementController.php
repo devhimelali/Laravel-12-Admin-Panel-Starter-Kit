@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserManagementController extends Controller
@@ -30,6 +31,7 @@ class UserManagementController extends Controller
                     });
                 })
                 ->editColumn('created_at', fn($row) => $row->created_at->format('d-m-Y (h:i A)'))
+                ->editColumn('email_verified_at', fn($row) => $row->email_verified_at?->format('d-m-Y (h:i A)') ?? 'N/A')
                 ->addColumn('actions', function ($row) {
                     return '<div class="btn-group">
                                 <a href="javascript:void(0)" data-id="' . $row->id . '" class="edit btn btn-secondary btn-sm d-flex align-items-center">
@@ -48,12 +50,19 @@ class UserManagementController extends Controller
         return view('user-managements.users.index');
     }
 
+    public function create()
+    {
+        $roles = Role::orderBy('name', 'asc')->get();
+        return view('components.user-managements.users.add-modal', compact('roles'));
+    }
+
     public function store(UserRequest $request)
     {
         $data = $request->validated();
         $data['password'] = bcrypt($data['password']);
 
-        User::create($data);
+        $user = User::create($data);
+        $user->assignRole($data['role']);
 
         return response()->json([
             'status' => 'success',
