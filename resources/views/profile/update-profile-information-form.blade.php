@@ -44,7 +44,7 @@
                     @endif
                     @error('photo')
                         <span class="text-danger">{{ $message }}</span>
-                    @enderror>
+                    @enderror
                 </div>
             @endif
 
